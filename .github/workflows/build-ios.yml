@@ -20,13 +20,8 @@ jobs:
 
     - name: Build IPA
       working-directory: ./app_ghichu
-      run: flutter build ipa --release --no-codesign
-
-    # === BƯỚC GỠ LỖI MỚI ===
-    - name: List build output
-      working-directory: ./app_ghichu
-      run: ls -R build
-    # ========================
+      # Thêm tham số --export-options-plist để chỉ đường dẫn
+      run: flutter build ipa --release --no-codesign --export-options-plist=ios/ExportOptions.plist
 
     - name: Upload IPA
       uses: actions/upload-artifact@v4
