@@ -8,21 +8,30 @@ jobs:
   build:
     runs-on: macos-latest
     steps:
+    # Bước 1: Lấy mã nguồn
     - uses: actions/checkout@v3
 
+    # Bước 2: Cài đặt Flutter
     - uses: subosito/flutter-action@v2
       with:
         channel: 'stable'
 
+    # Bước 3: Cài đặt các gói phụ thuộc
     - name: Install dependencies
       working-directory: ./app_ghichu
       run: flutter pub get
 
-    - name: Build IPA
+    # Bước 4: Chạy build để tạo ra file lưu trữ .xcarchive
+    - name: Build XCArchive
       working-directory: ./app_ghichu
-      # Thêm tham số --export-options-plist để chỉ đường dẫn
-      run: flutter build ipa --release --no-codesign --export-options-plist=ios/ExportOptions.plist
+      run: flutter build ipa --release --no-codesign
 
+    # Bước 5: TỰ MÌNH đóng gói IPA từ file lưu trữ (Bước quan trọng nhất)
+    - name: Export IPA from XCArchive
+      working-directory: ./app_ghichu
+      run: xcodebuild -exportArchive -archivePath build/ios/archive/Runner.xcarchive -exportPath build/ios/ipa -exportOptionsPlist ios/ExportOptions.plist
+
+    # Bước 6: Tải file IPA đã được tạo ở bước trên lên
     - name: Upload IPA
       uses: actions/upload-artifact@v4
       with:
