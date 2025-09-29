@@ -15,18 +15,21 @@ jobs:
         channel: 'stable'
 
     - name: Install dependencies
-      # Chỉ định thư mục làm việc cho bước này
       working-directory: ./app_ghichu
       run: flutter pub get
 
     - name: Build IPA
-      # Chỉ định thư mục làm việc cho bước này nữa
       working-directory: ./app_ghichu
       run: flutter build ipa --release --no-codesign
+
+    # === BƯỚC GỠ LỖI MỚI ===
+    - name: List build output
+      working-directory: ./app_ghichu
+      run: ls -R build
+    # ========================
 
     - name: Upload IPA
       uses: actions/upload-artifact@v4
       with:
         name: app-release
-        # Đường dẫn phải tính từ gốc, nên phải có app_ghichu/
         path: app_ghichu/build/ios/ipa/*.ipa
