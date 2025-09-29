@@ -1,0 +1,27 @@
+name: Build iOS App
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: subosito/flutter-action@v2
+      with:
+        channel: 'stable'
+    # Di chuyển vào đúng thư mục dự án Flutter
+    - name: Change Directory
+      run: cd app_ghichu
+    - name: Install dependencies
+      run: flutter pub get
+    - name: Build IPA
+      run: flutter build ipa --release --no-codesign
+    - name: Upload IPA
+      uses: actions/upload-artifact@v3
+      with:
+        name: app-release
+        # Cập nhật đường dẫn đến file IPA
+        path: build/ios/ipa/*.ipa
